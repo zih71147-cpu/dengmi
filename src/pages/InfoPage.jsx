@@ -3,7 +3,7 @@ import { RIDDLES, CULTURE_TYPE, DRAW_COUNT } from '../lib/quiz'
 
 const FIELDS = [
   { key: 'name', label: '姓名', placeholder: '请输入你的姓名', maxLength: 20 },
-  { key: 'className', label: '专业班级', placeholder: '如：计算机科学与技术 2301 班', maxLength: 30 },
+  { key: 'className', label: '专业班级', placeholder: '如：电子信息类25-3', maxLength: 30 },
   { key: 'studentId', label: '学号', placeholder: '请输入你的学号', maxLength: 20, inputMode: 'numeric' },
 ]
 

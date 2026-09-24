@@ -4,37 +4,11 @@ import PosterCard from '../components/PosterCard'
 import { blessingFor } from '../lib/blessing'
 import { formatTime } from '../lib/excel'
 
-const UPLOAD_TEXT = {
-  idle: { icon: '⏳', text: '正在整理答题数据…', className: 'border-gold-300/40 bg-night-900/50 text-gold-200' },
-  uploading: {
-    icon: '☁️',
-    text: '正在静默上传答题记录…',
-    className: 'border-gold-300/40 bg-night-900/50 text-gold-200',
-  },
-  success: {
-    icon: '✅',
-    text: '答题记录已上传至 Gitee 仓库，感谢参与！',
-    className: 'border-jade-400/50 bg-jade-500/15 text-jade-400',
-  },
-  file: {
-    icon: '📄',
-    text: '答题记录已写入仓库数据文件 records.json（Gitee Issue 通道当前不可用，已自动降级，数据同样归档）。',
-    className: 'border-gold-300/45 bg-gold-500/10 text-gold-200',
-  },
-  fallback: {
-    icon: '💾',
-    text: '网络异常或未配置仓库，成绩已保存在本机，管理员可在后台导出。',
-    className: 'border-lantern-400/50 bg-lantern-600/20 text-gold-100',
-  },
-}
-
-export default function ResultPage({ player, result, finishedAt, uploadState = 'idle', uploadMessage = '', onRestart }) {
+export default function ResultPage({ player, result, finishedAt, onRestart }) {
   const posterRef = useRef(null)
   const [posterUrl, setPosterUrl] = useState('')
   const [generating, setGenerating] = useState(false)
   const [posterError, setPosterError] = useState('')
-
-  const status = UPLOAD_TEXT[uploadState] || UPLOAD_TEXT.idle
 
   const handleGeneratePoster = async () => {
     if (!posterRef.current || generating) return
@@ -84,16 +58,6 @@ export default function ResultPage({ player, result, finishedAt, uploadState = '
             <span className="rounded-full border border-gold-300/35 bg-night-900/50 px-3 py-1">
               正确率 {result.accuracy}%
             </span>
-          </div>
-
-          <div
-            className={`mt-5 rounded-xl border px-3.5 py-3 text-left text-xs leading-relaxed sm:text-sm ${status.className}`}
-          >
-            <span className="mr-1" aria-hidden="true">
-              {status.icon}
-            </span>
-            {status.text}
-            {uploadMessage ? <span className="mt-1 block break-all opacity-80">（{uploadMessage}）</span> : null}
           </div>
 
           <p className="mt-3 text-xs text-gold-100/50">答题时间：{formatTime(finishedAt)}</p>
