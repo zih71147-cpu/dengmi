@@ -1,4 +1,4 @@
-<#
+﻿<#
     一键发布到 GitHub Pages（gh-pages 分支）
 
     用法（在项目根目录执行）：
@@ -67,3 +67,4 @@ if ($code -eq 0) {
     Write-Host "推送失败（exit=$code），请检查远程地址与凭据（首次推送会弹出浏览器登录）。" -ForegroundColor Red
     exit $code
 }
+
