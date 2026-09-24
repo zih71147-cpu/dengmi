@@ -1,0 +1,100 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  html,
+  body,
+  #root {
+    min-height: 100%;
+  }
+
+  body {
+    margin: 0;
+    /* 全局禁止横向滚动，保证手机竖屏不出现左右晃动 */
+    overflow-x: hidden;
+    background-color: theme('colors.night.900');
+    color: theme('colors.gold.100');
+    font-family: KaiTi, STKaiti, 'Kaiti SC', 楷体, 'Songti SC', STSong, SimSun, 宋体, -apple-system,
+      'PingFang SC', 'Microsoft YaHei', serif;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  input,
+  textarea,
+  button,
+  select {
+    font: inherit;
+    color: inherit;
+  }
+
+  input::placeholder {
+    color: rgba(255, 233, 168, 0.4);
+  }
+}
+
+@layer components {
+  /* 半透明中秋风格卡片 */
+  .moon-card {
+    @apply relative w-full rounded-3xl border border-gold-300/30 bg-night-800/70 p-5 shadow-card backdrop-blur-md sm:p-7;
+  }
+
+  .moon-card::before {
+    content: '';
+    @apply pointer-events-none absolute inset-0 rounded-3xl;
+    background: linear-gradient(160deg, rgba(255, 233, 168, 0.14), rgba(40, 60, 122, 0.05) 45%, transparent 75%);
+  }
+
+  .field-label {
+    @apply mb-1.5 block font-kai text-sm tracking-wide text-gold-200/90 sm:text-base;
+  }
+
+  .input-base {
+    @apply w-full rounded-xl border border-gold-300/30 bg-night-900/60 px-3.5 py-2.5 text-base text-gold-100
+      outline-none transition placeholder:text-gold-200/35 focus:border-gold-300 focus:ring-2 focus:ring-gold-300/40
+      sm:py-3;
+  }
+
+  .input-error {
+    @apply border-lantern-400/80 ring-2 ring-lantern-500/30;
+  }
+
+  .btn-primary {
+    @apply inline-flex w-full items-center justify-center gap-2 rounded-xl border border-gold-200/60
+      bg-gradient-to-b from-gold-300 to-gold-500 px-5 py-3 font-kai text-lg font-bold text-night-900
+      shadow-glow transition active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60;
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl border border-gold-300/40 bg-night-800/60
+      px-4 py-2.5 font-kai text-base text-gold-200 transition active:scale-[0.98] hover:border-gold-300 hover:text-gold-100;
+  }
+
+  .type-tag {
+    @apply inline-flex shrink-0 items-center rounded-full border border-jade-400/50 bg-jade-500/15 px-2.5 py-0.5
+      text-xs tracking-wide text-jade-400;
+  }
+}
+
+@layer utilities {
+  .text-glow {
+    text-shadow: 0 0 12px rgba(255, 216, 120, 0.6), 0 0 30px rgba(255, 216, 120, 0.28);
+  }
+
+  .safe-bottom {
+    padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 0.5rem);
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+}
+
