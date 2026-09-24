@@ -21,6 +21,8 @@ midautumn-riddle-quiz/
 ├─ postcss.config.js
 ├─ .env.example               # 环境变量模板（复制为 .env 使用）
 ├─ .env                       # 本地变量（已 gitignore，不会提交）
+├─ deploy/                    # 部署文件：Dockerfile（Node 构建 + Nginx 托管）、nginx.conf
+├─ scripts/                   # 一键发布脚本：deploy-gh-pages.ps1 / deploy-gh-pages.sh
 └─ src/
    ├─ main.jsx
    ├─ App.jsx                 # 页面状态机 / 静默上传 / 隐藏后台入口
@@ -168,9 +170,48 @@ npm run preview
 3. Gitee 仓库 → 服务 → Gitee Pages → 部署分支选 `master`（目录 `/` 或 `/docs`）→ 部署；
 4. 因为 `vite.config.js` 里 `base: './'`，无需额外配置子路径；本站通过页面状态切换而不是路由跳转，**无需 301/重写规则**。
 
-### 方式三：任意静态托管（Vercel / Netlify / Nginx / 对象存储）
+### 方式三：GitHub Pages（本项目仓库，附一键发布脚本）
+
+1. 本项目代码已在 `zih71147-cpu/dengmi` 的 `main` 分支；
+2. 本地（或任意装好 Node 的机器）执行一键发布：
+
+   ```powershell
+   # Windows
+   powershell -ExecutionPolicy Bypass -File scripts\deploy-gh-pages.ps1
+   ```
+   ```bash
+   # macOS / Linux
+   bash scripts/deploy-gh-pages.sh
+   ```
+
+   脚本会：读取 `.env` 里的 `VITE_*` → `npm run build` → 把 `dist/`（含 `.nojekyll`）强推到 `gh-pages` 分支；
+3. 打开仓库 **Settings → Pages**，把 **Source** 设为 `gh-pages` 分支、目录 `/`（只需设置一次）；
+4. 访问 `https://zih71147-cpu.github.io/dengmi/` 即可。
+
+> ⚠️ 两点注意：
+> 1. **私有仓库的 Pages 需要 GitHub Pro/Team**；免费账号请先把仓库改为 **公开**（Settings → General → 最下方 Change visibility）。
+> 2. 静态产物的 JS 里会包含 `VITE_GITEE_PAT`（Serverless 方案固有），公开托管时请使用**仅限该数据仓库、仅 issues 权限**的令牌，并定期轮换。
+
+### 方式四：任意静态托管（Vercel / Netlify / 对象存储）
 
 直接上传 `dist/` 目录即可；`index.html` + 相对路径资源，无服务端依赖。
+
+### 方式五：Docker / 自建服务器
+
+```bash
+# 构建镜像（Vite 变量必须通过 --build-arg 传入）
+docker build -f deploy/Dockerfile \
+  --build-arg VITE_GITEE_OWNER=你的用户名 \
+  --build-arg VITE_GITEE_REPO=midautumn-riddle-data \
+  --build-arg VITE_GITEE_PAT=你的Gitee令牌 \
+  --build-arg VITE_SITE_URL=https://你的域名 \
+  -t midautumn-riddle-quiz .
+
+# 运行（Nginx 托管，监听 80）
+docker run -d --name dizhimi -p 8080:80 --restart always midautumn-riddle-quiz
+```
+
+配套的 `deploy/nginx.conf` 已开启 gzip、静态资源长缓存与 SPA 回落（`try_files ... /index.html`）。
 
 ---
 
