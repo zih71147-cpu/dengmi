@@ -5,7 +5,7 @@ import QuizPage from './pages/QuizPage'
 import ResultPage from './pages/ResultPage'
 import AdminPage from './pages/AdminPage'
 import { gradeAnswers, pickQuestions } from './lib/quiz'
-import { ADMIN_PASSWORD, SITE_URL } from './lib/config'
+import { ADMIN_PASSWORD, SITE_URL, isClosed } from './lib/config'
 import { saveRecord } from './lib/gitee'
 import { saveLocalRecord } from './lib/storage'
 
@@ -48,6 +48,8 @@ export default function App() {
   }
 
   const handleStart = (info) => {
+    // 兜底：活动截止后不再允许开始答题（正常入口已在首页拦截）
+    if (isClosed()) return
     setPlayer(info)
     setQuestions(pickQuestions())
     setResult(null)

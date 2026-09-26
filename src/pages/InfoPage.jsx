@@ -1,5 +1,6 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { RIDDLES, CULTURE_TYPE, DRAW_COUNT } from '../lib/quiz'
+import { formatDeadline, formatRemaining, isClosed, remainingMs } from '../lib/config'
 
 const FIELDS = [
   { key: 'name', label: '姓名', placeholder: '请输入你的姓名', maxLength: 20 },
@@ -13,6 +14,14 @@ export default function InfoPage({ onSubmit }) {
   const [form, setForm] = useState(EMPTY_FORM)
   const [errors, setErrors] = useState({})
   const inputRefs = useRef({})
+
+  const [remaining, setRemaining] = useState(() => remainingMs())
+
+  // 每秒刷新倒计时，并在到点时自动切换为"活动已结束"
+  useEffect(() => {
+    const timer = setInterval(() => setRemaining(remainingMs()), 1000)
+    return () => clearInterval(timer)
+  }, [])
 
   const cultureCount = RIDDLES.filter((item) => item.type === CULTURE_TYPE).length
 
@@ -46,6 +55,39 @@ export default function InfoPage({ onSubmit }) {
     })
   }
 
+  // 活动已截止：只显示结束页，不再允许答题
+  if (remaining <= 0) {
+    return (
+      <div className="flex flex-1 animate-riseup flex-col items-center justify-center">
+        <header className="mb-6 w-full text-center sm:mb-8">
+          <p className="font-kai text-sm tracking-[0.4em] text-gold-200/80 sm:text-base">花好月圆 · 灯谜贺秋</p>
+          <h1 className="mt-3 font-kai text-4xl font-bold tracking-wider text-gold-200 text-glow sm:text-5xl">
+            中秋灯谜
+          </h1>
+        </header>
+
+        <section className="moon-card text-center">
+          <div className="relative">
+            <p className="text-4xl sm:text-5xl" aria-hidden="true">
+              🌕
+            </p>
+            <h2 className="mt-4 font-kai text-2xl font-bold text-gold-200 sm:text-3xl">活动已结束</h2>
+            <p className="mt-4 text-sm leading-relaxed text-gold-100/80 sm:text-base">
+              本次中秋灯谜答题已于
+              <span className="mx-1 text-gold-300">{formatDeadline()}</span>
+              截止，感谢大家的参与！
+              <br />
+              月圆人团圆，祝各位中秋快乐、万事顺遂。
+            </p>
+            <p className="mt-4 text-xs text-gold-100/55 sm:text-sm">
+              成绩统计与获奖名单请留意班级通知。
+            </p>
+          </div>
+        </section>
+      </div>
+    )
+  }
+
   return (
     <div className="flex flex-1 animate-riseup flex-col items-center justify-center">
       <header className="mb-6 w-full text-center sm:mb-8">
@@ -56,6 +98,11 @@ export default function InfoPage({ onSubmit }) {
         <p className="mt-3 text-sm text-gold-100/70 sm:text-base">
           共 {RIDDLES.length} 道灯谜 · 随机抽取 {DRAW_COUNT} 题 · 至少含 1 道中秋习俗题
         </p>
+        <p className="mx-auto mt-3 inline-flex items-center gap-2 rounded-full border border-lantern-400/50 bg-lantern-600/20 px-3.5 py-1 text-xs text-gold-100 sm:text-sm">
+          <span aria-hidden="true">⏳</span>
+          距截止还有 <span className="font-bold text-gold-200">{formatRemaining(remaining)}</span>
+        </p>
+        <p className="mt-2 text-xs text-gold-100/60 sm:text-sm">活动截止：{formatDeadline()}</p>
       </header>
 
       <section className="moon-card">

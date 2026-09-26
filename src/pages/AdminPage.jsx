@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { GITEE, isGiteeConfigured } from '../lib/config'
+import { GITEE, formatDeadline, isClosed, isGiteeConfigured } from '../lib/config'
 import { createSelfTestIssue, fetchAllRecords, fetchRecordsFile, probeConnection, saveRecord } from '../lib/gitee'
 import { exportRecordsToExcel, formatTime } from '../lib/excel'
 import { clearLocalRecords, loadLocalRecords, removeLocalRecord } from '../lib/storage'
@@ -144,6 +144,10 @@ export default function AdminPage({ onExit }) {
           </p>
           <p className="text-gold-100/80">
             令牌：<span className="text-gold-200">{GITEE.token ? '已配置' : '未配置（可读取公开仓库 Issue）'}</span>
+          </p>
+          <p className="text-gold-100/80">
+            活动截止：<span className="text-gold-200">{formatDeadline()}</span>（
+            {isClosed() ? '已结束' : '进行中'}）
           </p>
           <p className="text-gold-100/80">
             Issue 总数：<span className="text-gold-200">{issuesCount}</span> · 有效成绩：
