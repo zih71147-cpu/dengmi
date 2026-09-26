@@ -43,8 +43,11 @@ export default function AdminPage({ onExit }) {
 
   const handleExportRemote = () => {
     try {
-      const count = exportRecordsToExcel(records, '中秋灯谜答题成绩')
-      setStatus(`已导出 ${count} 条记录，Excel 含「成绩汇总」与「答题明细」两个工作表。`)
+      const result = exportRecordsToExcel(records, '中秋灯谜答题成绩')
+      setStatus(
+        `已导出：原始 ${result.raw} 条 → 同一学号去重后 ${result.unique} 人；` +
+          'Excel 含「成绩明细」「答题明细」「统计汇总」三个工作表（按班级+姓名排序，不含排名）。',
+      )
     } catch (error) {
       setStatus(error.message)
     }
@@ -52,8 +55,8 @@ export default function AdminPage({ onExit }) {
 
   const handleExportLocal = () => {
     try {
-      const count = exportRecordsToExcel(localRecords, '中秋灯谜答题成绩_本机暂存')
-      setStatus(`已导出本机暂存的 ${count} 条记录。`)
+      const result = exportRecordsToExcel(localRecords, '中秋灯谜答题成绩_本机暂存')
+      setStatus(`已导出本机暂存：原始 ${result.raw} 条 → 同一学号去重后 ${result.unique} 人。`)
     } catch (error) {
       setStatus(error.message)
     }
