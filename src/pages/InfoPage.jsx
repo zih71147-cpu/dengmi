@@ -56,7 +56,7 @@ export default function InfoPage({ onSubmit }) {
   }
 
   // 活动已截止：只显示结束页，不再允许答题
-  if (remaining <= 0) {
+  if (isClosed() || remaining <= 0) {
     return (
       <div className="flex flex-1 animate-riseup flex-col items-center justify-center">
         <header className="mb-6 w-full text-center sm:mb-8">
